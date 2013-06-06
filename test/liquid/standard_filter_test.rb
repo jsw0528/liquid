@@ -80,6 +80,10 @@ class StandardFiltersTest < Test::Unit::TestCase
     assert_equal [{"a" => 1}, {"a" => 2}, {"a" => 3}, {"a" => 4}], @filters.sort([{"a" => 4}, {"a" => 3}, {"a" => 1}, {"a" => 2}], "a")
   end
 
+  def test_reverse
+    assert_equal [4,3,2,1], @filters.reverse([1,2,3,4])
+  end
+
   def test_map
     assert_equal [1,2,3,4], @filters.map([{"a" => 1}, {"a" => 2}, {"a" => 3}, {"a" => 4}], 'a')
     assert_template_result 'abc', "{{ ary | map:'foo' | map:'bar' }}",
@@ -160,6 +164,8 @@ class StandardFiltersTest < Test::Unit::TestCase
     assert_match(/(6\.3)|(6\.(0{13})1)/, Template.parse("{{ '2.1' | times:3 }}").render)
 
     assert_template_result "6", "{{ '2.1' | times:3 | replace: '.','-' | plus:0}}"
+
+    assert_template_result "7.25", "{{ 0.0725 | times:100 }}"
   end
 
   def test_divided_by
@@ -171,6 +177,8 @@ class StandardFiltersTest < Test::Unit::TestCase
 
     assert_template_result "5", "{{ 15 | divided_by:3 }}"
     assert_template_result "Liquid error: divided by 0", "{{ 5 | divided_by:0 }}"
+
+    assert_template_result "0.5", "{{ 2.0 | divided_by:4 }}"
   end
 
   def test_modulo
